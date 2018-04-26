@@ -5,6 +5,7 @@ The model in this file is a simple convolutional network with two
 convolutional layers, two pooling layers, followed by two fully connected
 layers. A single dropout layer is used between the two fully connected layers.
 """
+from __future__ import print_function
 
 import logging
 import os
@@ -20,7 +21,7 @@ DEFAULT_MODEL_DIRECTORY = pkg_resources.resource_filename(__name__, "data")
 DEFAULT_MODEL_PATH = DEFAULT_MODEL_DIRECTORY + "/" + os.path.basename(constants.REMOTE_MODEL_CHECKPOINT_PATH)
 
 def download_model(source_path=constants.REMOTE_MODEL_CHECKPOINT_PATH, output_path=DEFAULT_MODEL_DIRECTORY):
-    print "Downloading model from %s to %s." % (source_path, output_path)
+    print("Downloading model from %s to %s." % (source_path, output_path))
     if not os.path.isdir(output_path):
         os.mkdir(output_path)
     file_extensions = [".index", ".meta", ".data-00000-of-00001"]
@@ -28,9 +29,9 @@ def download_model(source_path=constants.REMOTE_MODEL_CHECKPOINT_PATH, output_pa
         remote_path = constants.REMOTE_MODEL_CHECKPOINT_PATH + extension
         local_path = os.path.join(output_path, os.path.basename(remote_path))
         urllib.urlretrieve(remote_path, local_path)
-                                  
-    print "Downloaded %d files to %s." % (len(file_extensions), output_path)
-    print "Default model path is %s." % DEFAULT_MODEL_PATH
+
+    print("Downloaded %d files to %s." % (len(file_extensions), output_path))
+    print("Default model path is %s." % DEFAULT_MODEL_PATH)
 
 def add_loss(logits, one_hot_labels, use_rank_loss=False):
     """Add loss function to tf.losses.
