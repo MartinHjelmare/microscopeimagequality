@@ -10,12 +10,17 @@ from __future__ import print_function
 import logging
 import os
 import pkg_resources
+import shutil
 
 import tensorflow
 import tensorflow.contrib.slim
-import urllib
 
 import microscopeimagequality.constants as constants
+
+try:
+    from urllib.request import urlopen
+except ImportError:  # on Python 2
+    from urllib2 import urlopen
 
 DEFAULT_MODEL_DIRECTORY = pkg_resources.resource_filename(__name__, "data")
 DEFAULT_MODEL_PATH = DEFAULT_MODEL_DIRECTORY + "/" + os.path.basename(constants.REMOTE_MODEL_CHECKPOINT_PATH)
@@ -28,7 +33,8 @@ def download_model(source_path=constants.REMOTE_MODEL_CHECKPOINT_PATH, output_pa
     for extension in file_extensions:
         remote_path = constants.REMOTE_MODEL_CHECKPOINT_PATH + extension
         local_path = os.path.join(output_path, os.path.basename(remote_path))
-        urllib.urlretrieve(remote_path, local_path)
+        with urlopen(remote_path) as res, open(local_path, 'wb') as out:
+            shutil.copyfileobj(res, out)
 
     print("Downloaded %d files to %s." % (len(file_extensions), output_path))
     print("Default model path is %s." % DEFAULT_MODEL_PATH)
